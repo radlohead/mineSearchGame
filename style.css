@@ -1,0 +1,28 @@
+#table{
+    border-collapse: collapse;
+}
+.box{
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    text-indent: -9999px;
+    cursor: pointer;
+    background: #e6e6e6;
+    border-top:2px solid #fff;
+    border-left:2px solid #fff;
+    border-right:2px solid #999;
+    border-bottom:2px solid #999;
+}
+.box.on{
+    background: #999999;
+    border: 2px solid #666;
+}
+.box.mine{
+    background: url("./src/images/mine.png") no-repeat;
+    -webkit-background-size:cover;
+    background-size:cover;
+}
+button{
+    margin-left: 10px;
+    font-size: 13px;
+}
