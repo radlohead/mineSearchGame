@@ -22,7 +22,12 @@
     -webkit-background-size:cover;
     background-size:cover;
 }
+.flag{
+    background: url("./src/images/flag.png") no-repeat;
+    -webkit-background-size:cover;
+    background-size:cover;
+}
 button{
-    margin-left: 10px;
+    margin-left: 20px;
     font-size: 13px;
 }

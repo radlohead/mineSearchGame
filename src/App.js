@@ -6,7 +6,7 @@ class App extends Component {
         //input radio status
         this.state = {
             selectOption: null
-        }
+        };
         //total row
         this.inputLine = null;
         this.doc = document;
@@ -33,19 +33,18 @@ class App extends Component {
             v.classList = '';
         })
     }
+    selectInputLine(){
+        const targetValue = this.state.selectOption;
+        if(targetValue == 81) this.inputLine = 9;
+        if(targetValue == 256) this.inputLine = 16;
+        if(targetValue == 480) this.inputLine = 30;
+    }
     //form submit
     handleFormSubmit(formSubmitEvent){
         formSubmitEvent.preventDefault();
         this.init();
-        const targetValue = this.state.selectOption;
-
-        const inputLine = () => {
-            if(targetValue == 81) this.inputLine = 9;
-            if(targetValue == 256) this.inputLine = 16;
-            if(targetValue == 480) this.inputLine = 30;
-        };
-        inputLine();
-
+        this.selectInputLine();
+        //create tag
         this.createTable();
     }
     //form submit is createTable
@@ -77,13 +76,14 @@ class App extends Component {
 
             if(td.innerHTML === '0'){
                 td.classList += ' mine';
-                //td .mine click
                 this.gameover();
             }
-            else{
-                //td each click
-                this.handleClick(td);
-            }
+            else this.handleClick(td);
+        });
+        //right click event
+        td.addEventListener('contextmenu', e => {
+            e.preventDefault();
+            this.handleRightClick(td);
         });
     }
     //end function
@@ -94,25 +94,48 @@ class App extends Component {
     }
     //progress function
     handleClick(td){
-        let dataItem = parseInt(td.getAttribute('data-item'));
+        const dataItem = parseInt(td.getAttribute('data-item'));
 
         this.doc.querySelectorAll('.box').forEach((v, i) => {
             if(dataItem == i){
                 this.doc.querySelectorAll('.box').forEach((v, i) => {
-                    if(dataItem === i+1) td.parentElement === v.parentElement ? v.classList += ' on' : null;
-                    if(dataItem === i-1) td.parentElement === v.parentElement ? v.classList += ' on' : null;
-                    if(dataItem === this.inputLine + i || dataItem === i - this.inputLine) v.classList += ' on';
-                    if(dataItem === i+1 || dataItem === i-1 || dataItem === this.inputLine + i || dataItem === i - this.inputLine){
-                        v.innerHTML == '0' ? this.gameover() : null;
-                    }
-                })
+                    this.handleClickBoxTest(dataItem, td, v, i);
+                });
             }
         })
+    }
+    //.box is match test
+    handleClickBoxTest(dataItem, td, v, i){
+        dataItem === i+1 && this.flagMineMatch(v) ? this.leftRightCompare(td, v) : null;
+        dataItem === i-1 && this.flagMineMatch(v) ? this.leftRightCompare(td, v) : null;
+        dataItem === this.inputLine + i && this.flagMineMatch(v) ? this.onClassAdd(v) : null;
+        dataItem === i - this.inputLine && this.flagMineMatch(v) ? this.onClassAdd(v) : null;
+    }
+    //left right is compare
+    leftRightCompare(td, v){
+        return td.parentElement === v.parentElement ? this.onClassAdd(v) : null;
+    }
+    //on class add
+    onClassAdd(v){
+        return v.classList += ' on';
+    }
+    //flag search function
+    flagMatch(v){
+        return /flag/.test(v.className.match(/flag/g));
+    }
+    //flagMineMatch
+    flagMineMatch(v){
+        return !this.flagMatch(v) && v.innerHTML != '0';
+    }
+    //right click event
+    handleRightClick(td){
+        if(this.flagMatch(td)) return td.classList.remove('flag');
+        td.classList += ' flag';
     }
     render() {
         return (
             <div>
-                <h1>초간단 지뢰찾기</h1>
+                <h1>지뢰찾기 게임</h1>
                 <form onSubmit={formSubmitEvent => this.handleFormSubmit(formSubmitEvent)}>
                     <label>
                         <input type="radio" name="mineRadio" value="81"
